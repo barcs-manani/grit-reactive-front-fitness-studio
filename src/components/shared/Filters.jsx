@@ -1,0 +1,48 @@
+import { useState } from "react";
+
+
+const horizontalPositions = {
+    center: "justify-center",
+    right: "justify-end"
+};
+
+const Filters = ({
+    fields = [],
+    setSelected,
+    xPosition = "center"
+}) => {
+    const justify = horizontalPositions[xPosition] ?? "justify-start";
+    const [localSelect, setLocalSelect] = useState([]);
+    const handleSelect = (field) => {
+        const nextSelect = localSelect.includes(field)
+            ? localSelect.filter((f) => f !== field)
+            : [
+                ...localSelect,
+                field
+            ];
+        setLocalSelect(nextSelect);
+        if (typeof setSelected === "function") {
+            setSelected(nextSelect);
+        }
+    };
+
+    if (!fields.length) return <></>;
+    return (
+        <div className={`w-full flex ${justify} items-center flex-wrap gap-2`}>
+            {fields.map((f, idx) => {
+                const selected = localSelect.includes(f);
+                return (
+                    <button
+                        key={idx}
+                        className={`py-1.5 px-3.5 ${selected ? 'bg-(--blue) text-white' : 'bg-(--bg) text-(--ink-soft) border border-(--line)'} font-semibold no-underline rounded-(--btn-radius) cursor-pointer transition-colors duration-200 ease-in-out hover:bg-(--ice)`}
+                        onClick={() => handleSelect(f)}
+                    >
+                        {f}
+                    </button>
+                )
+            })}
+        </div>
+    );
+};
+
+export { Filters }
